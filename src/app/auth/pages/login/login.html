@@ -1,45 +1,67 @@
-<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
-    <div class="card shadow-lg border-0" style="max-width: 400px; width: 100%; border-radius: 1rem;">
-        <div class="card-body p-5">
-            <div class="text-center mb-4">
-                <i class="bi bi-person-circle fs-1 text-primary"></i>
-                <h2 class="fw-bold mt-2">Welcome Back</h2>
-                <p class="text-muted">Please enter your details</p>
+<div class="auth-wrapper">
+    <div class="auth-content">
+        <div class="auth-bg">
+            <span class="r"></span>
+            <span class="r s"></span>
+            <span class="r s"></span>
+            <span class="r"></span>
+        </div>
+        <div class="card">
+            <div class="card-body text-center">
+                <form (ngSubmit)="onSubmit($event)">
+                    <div class="mb-4">
+                        <i class="feather icon-unlock auth-icon"></i>
+                    </div>
+                    <h3 class="mb-4">Login</h3>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" id="floatingInput"
+                            [class.is-invalid]="submitted() && loginForm.email().invalid()" placeholder="Email Address"
+                            [field]="loginForm.email" />
+                        @if (submitted() && loginForm.email().invalid()) {
+                        <div class="invalid-feedback">
+                            @for (error of loginForm.email().errors(); track error.kind) {
+                            <div>{{ error.message }}</div>
+                            }
+                        </div>
+                        }
+                    </div>
+                    <div class="input-group mb-4">
+                        @if (!showPassword()) {
+                        <input type="password" id="password" class="form-control" [field]="loginForm.password"
+                            [class.is-invalid]="submitted() && loginForm.password().errors().length > 0"
+                            placeholder="Password (min. 8 characters)" />
+                        } @else {
+                        <input type="text" id="password" class="form-control" [field]="loginForm.password"
+                            [class.is-invalid]="submitted() && loginForm.password().errors().length > 0"
+                            placeholder="Password (min. 8 characters)" />
+                        }
+                        <i [ngClass]="showPassword() ? 'feather icon-eye' : 'feather icon-eye-off'" id="togglePassword"
+                            (click)="togglePasswordVisibility()"></i>
+                        @if (submitted() && loginForm.password().errors().length > 0) {
+                        <div class="invalid-feedback">
+                            @for (error of loginForm.password().errors(); track error.kind) {
+                            <div>{{ error.message }}</div>
+                            }
+                        </div>
+                        }
+                    </div>
+                    <div class="form-group text-start">
+                        <div class="checkbox checkbox-fill d-inline">
+                            <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="" />
+                            <label for="checkbox-fill-a1" class="cr">Save Details</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-4">Login</button>
+                    <p class="mb-2 text-muted">
+                        Forgot password?
+                        <a [routerLink]="['#']">Reset</a>
+                    </p>
+                </form>
+                <p class="mb-0 text-muted">
+                    Don’t have an account?
+                    <a [routerLink]="['/register']">Sign up</a>
+                </p>
             </div>
-
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com"
-                        formControlName="email"
-                        [ngClass]="{'is-invalid': loginForm.get('email')?.touched && loginForm.get('email')?.invalid}">
-                    <div class="invalid-feedback">
-                        Please enter a valid email address.
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control form-control-lg" id="password" placeholder="••••••••"
-                        formControlName="password"
-                        [ngClass]="{'is-invalid': loginForm.get('password')?.touched && loginForm.get('password')?.invalid}">
-                    <div class="invalid-feedback">
-                        Password must be at least 6 characters.
-                    </div>
-                </div>
-
-                <div class="d-grid shadow-sm">
-                    <button type="submit" class="btn btn-primary btn-lg"
-                        [disabled]="loginForm.invalid && loginForm.touched">
-                        Sign In
-                    </button>
-                </div>
-
-                <div class="text-center mt-4">
-                    <p class="small text-muted mb-0">Don't have an account? <a routerLink="/auth/register"
-                            class="text-primary text-decoration-none fw-bold">Sign up</a></p>
-                </div>
-            </form>
         </div>
     </div>
 </div>

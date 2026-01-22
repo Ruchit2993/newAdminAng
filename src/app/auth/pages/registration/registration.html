@@ -1,55 +1,103 @@
-<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
-    <div class="card shadow-lg border-0" style="max-width: 450px; width: 100%; border-radius: 1rem;">
-        <div class="card-body p-5">
-            <div class="text-center mb-4">
-                <i class="bi bi-person-plus-fill fs-1 text-primary"></i>
-                <h2 class="fw-bold mt-2">Create Account</h2>
-                <p class="text-muted">Join us today! It's free and easy.</p>
+<div class="auth-wrapper">
+    <div class="auth-content">
+        <div class="auth-bg">
+            <span class="r"></span>
+            <span class="r s"></span>
+            <span class="r s"></span>
+            <span class="r"></span>
+        </div>
+        <div class="card">
+            <div class="card-body text-center">
+                <form (ngSubmit)="onSubmit($event)">
+                    <div class="mb-4">
+                        <i class="feather icon-user-plus auth-icon"></i>
+                    </div>
+                    <h3 class="mb-4">Sign up</h3>
+                    <!-- <div class="input-group mb-3">
+                        <input type="text" id="username" class="form-control" placeholder="Username"
+                            [field]="registerForm.username"
+                            [class.is-invalid]="submitted() && registerForm.username().errors().length > 0" />
+                        @if (submitted() && registerForm.username().errors().length > 0) {
+                        <div class="invalid-feedback">
+                            @for (error of registerForm.username().errors(); track error.kind) {
+                            <div>{{ error.message }}</div>
+                            }
+                        </div>
+                        }
+                    </div> -->
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" id="floatingInput"
+                            [class.is-invalid]="submitted() && registerForm.email().invalid()"
+                            placeholder="Email Address" [field]="registerForm.email" />
+                        @if (submitted() && registerForm.email().invalid()) {
+                        <div class="invalid-feedback">
+                            @for (error of registerForm.email().errors(); track error.kind) {
+                            <div>{{ error.message }}</div>
+                            }
+                        </div>
+                        }
+                    </div>
+                    <div class="input-group mb-4">
+                        @if (!showPassword()) {
+                        <input type="password" id="password" class="form-control" [field]="registerForm.password"
+                            [class.is-invalid]="submitted() && registerForm.password().errors().length > 0"
+                            placeholder="Password (min. 8 characters)" />
+                        } @else {
+                        <input type="text" id="password" class="form-control" [field]="registerForm.password"
+                            [class.is-invalid]="submitted() && registerForm.password().errors().length > 0"
+                            placeholder="Password (min. 8 characters)" />
+                        }
+                        <i [ngClass]="showPassword() ? 'feather icon-eye' : 'feather icon-eye-off'" id="togglePassword"
+                            (click)="togglePasswordVisibility()"></i>
+                        @if (submitted() && registerForm.password().errors().length > 0) {
+                        <div class="invalid-feedback">
+                            @for (error of registerForm.password().errors(); track error.kind) {
+                            <div>{{ error.message }}</div>
+                            }
+                        </div>
+                        }
+                    </div>
+                    <div class="input-group mb-4">
+                        <input type="password" id="confirmPassword" class="form-control"
+                            [field]="registerForm.confirmPassword"
+                            [class.is-invalid]="submitted() && (registerForm.confirmPassword().errors().length > 0 || passwordsMismatch())"
+                            placeholder="Confirm Password" />
+                        @if (submitted() && registerForm.confirmPassword().errors().length > 0) {
+                        <div class="invalid-feedback">
+                            @for (error of registerForm.confirmPassword().errors(); track error.kind) {
+                            <div>{{ error.message }}</div>
+                            }
+                        </div>
+                        }
+                        @if (submitted() && passwordsMismatch()) {
+                        <div class="invalid-feedback">
+                            Passwords do not match
+                        </div>
+                        }
+                    </div>
+                    <div class="form-group text-start">
+                        <div class="checkbox checkbox-fill d-inline">
+                            <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-1" checked="" />
+                            <label for="checkbox-fill-1" class="cr">Save Details</label>
+                        </div>
+                    </div>
+                    <div class="form-group text-start">
+                        <div class="checkbox checkbox-fill d-inline">
+                            <input type="checkbox" name="checkbox-fill-2" id="checkbox-fill-2" />
+                            <label for="checkbox-fill-2" class="cr">
+                                Send me the
+                                <a href="javascript:void(0)">Newsletter</a>
+                                weekly.
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary shadow-2 mb-4">Sign up</button>
+                </form>
+                <p class="mb-0 text-muted">
+                    Already have an account?
+                    <a [routerLink]="['/auth/login']">Log in</a>
+                </p>
             </div>
-
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com"
-                        formControlName="email"
-                        [ngClass]="{'is-invalid': registerForm.get('email')?.touched && registerForm.get('email')?.invalid}">
-                    <div class="invalid-feedback">
-                        Please enter a valid email address.
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control form-control-lg" id="password" placeholder="••••••••"
-                        formControlName="password"
-                        [ngClass]="{'is-invalid': registerForm.get('password')?.touched && registerForm.get('password')?.invalid}">
-                    <div class="invalid-feedback">
-                        Password must be at least 6 characters.
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control form-control-lg" id="confirmPassword"
-                        placeholder="••••••••" formControlName="confirmPassword"
-                        [ngClass]="{'is-invalid': registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid}">
-                    <div class="invalid-feedback">
-                        Passwords do not match.
-                    </div>
-                </div>
-
-                <div class="d-grid shadow-sm">
-                    <button type="submit" class="btn btn-primary btn-lg"
-                        [disabled]="registerForm.invalid && registerForm.touched">
-                        Sign Up
-                    </button>
-                </div>
-
-                <div class="text-center mt-4">
-                    <p class="small text-muted mb-0">Already have an account? <a href="/auth/login"
-                            class="text-primary text-decoration-none fw-bold">Sign in</a></p>
-                </div>
-            </form>
         </div>
     </div>
 </div>

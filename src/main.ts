@@ -1,6 +1,24 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { App } from './app/app';
+/// <reference types="@angular/localize" />
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+import { enableProdMode, importProvidersFrom } from '@angular/core';
+
+import { environment } from './environments/environment';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
+import { AppRoutingModule } from './app/app-routing.module';
+import { AppComponent } from './app/app.component';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+import { provideToastr } from 'ngx-toastr';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(BrowserModule, AppRoutingModule),
+    provideAnimations(),
+    provideToastr()
+  ]
+}).catch((err) => console.error(err));
