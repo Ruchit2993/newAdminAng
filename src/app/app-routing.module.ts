@@ -17,6 +17,14 @@ const routes: Routes = [
       },
       {
         path: 'dashboard',
+        loadComponent: () => import('./non-auth/pages/dashboard/dashboard').then((c) => c.DashboardComponent)
+      },
+      {
+        path: 'category',
+        loadChildren: () => import('./non-auth/pages/category/category.routes').then((m) => m.CATEGORY_ROUTES)
+      },
+      {
+        path: 'new-dashboard',
         loadComponent: () => import('./demo/dashboard/dashboard.component').then((c) => c.DashboardComponent)
       },
       {

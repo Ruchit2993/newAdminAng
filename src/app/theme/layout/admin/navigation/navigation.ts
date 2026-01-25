@@ -27,6 +27,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/dashboard',
         icon: 'feather icon-home',
         classes: 'nav-item'
+      },
+      {
+        id: 'category',
+        title: 'Categories',
+        type: 'item',
+        url: '/category',
+        icon: 'feather icon-layers',
+        classes: 'nav-item'
       }
     ]
   },
