@@ -2,8 +2,8 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Category List</h5>
-                <button [routerLink]="['/category/add']" class="btn btn-primary btn-sm">Add Category</button>
+                <h5>Product List</h5>
+                <button [routerLink]="['/product/add']" class="btn btn-primary btn-sm">Add Product</button>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
@@ -29,35 +29,39 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @for (category of categories; track category.id; let i = $index) {
+                            @for (product of products; track product.id; let i = $index) {
                             <tr>
-                                <td>{{ i + 1 }}</td>
-                                <td>{{ category.name }}</td>
+                                <td>{{ i + 1 + (page - 1) * pageSize }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ getCategoryName(product.category_id) }}</td>
+                                <td>{{ product.price }}</td>
                                 <td>
                                     <span class="badge"
-                                        [ngClass]="category.status === 1 || category.status === '1' || category.status === 'Active' ? 'bg-success' : 'bg-danger'">
-                                        {{ (category.status === 1 || category.status === '1') ? 'Active' : 'Inactive' }}
+                                        [ngClass]="product.status === 1 || product.status === '1' || product.status === 'Active' ? 'bg-success' : 'bg-danger'">
+                                        {{ (product.status === 1 || product.status === '1') ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
                                 <td>
-                                    <button [routerLink]="['/category/edit', category.id]"
+                                    <button [routerLink]="['/product/edit', product.id]"
                                         class="btn btn-info btn-sm mr-2">
                                         <i class="feather icon-edit"></i>
                                     </button>
-                                    <button (click)="openDeleteModal(category.id!)" class="btn btn-danger btn-sm">
+                                    <button (click)="openDeleteModal(product.id!)" class="btn btn-danger btn-sm">
                                         <i class="feather icon-trash"></i>
                                     </button>
                                 </td>
                             </tr>
                             }
-                            @if (categories.length === 0) {
+                            @if (products.length === 0) {
                             <tr>
-                                <td colspan="4" class="text-center">No categories found.</td>
+                                <td colspan="6" class="text-center">No products found.</td>
                             </tr>
                             }
                         </tbody>
@@ -66,7 +70,7 @@
                     @if (collectionSize > 0) {
                     <div class="d-flex justify-content-end p-2">
                         <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="collectionSize"
-                            (pageChange)="onPageChange($event)" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                            (pageChange)="onPageChange($event)" [maxSize]="5" [boundaryLinks]="true">
                         </ngb-pagination>
                     </div>
                     }
@@ -80,7 +84,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" [ngClass]="{'show': showDeleteModal}"
     [style.display]="showDeleteModal ? 'block' : 'none'"
     [style.background]="showDeleteModal ? 'rgba(0,0,0,0.5)' : 'none'" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Confirm Delete</h5>
@@ -89,7 +93,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this category?</p>
+                <p>Are you sure you want to delete this product?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>

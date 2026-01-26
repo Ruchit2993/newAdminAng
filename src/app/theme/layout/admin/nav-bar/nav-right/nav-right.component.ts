@@ -16,11 +16,20 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 })
 export class NavRightComponent {
   // public props
+  visibleUser = {
+    name: 'John Doe',
+    avatar: 'assets/images/user/avatar-1.jpg'
+  };
 
   // constructor
   constructor() {
     const config = inject(NgbDropdownConfig);
 
     config.placement = 'bottom-right';
+  }
+
+  logout() {
+    // console.log('logout');
+    localStorage.clear();
   }
 }

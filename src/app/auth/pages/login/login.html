@@ -51,7 +51,7 @@
                             <label for="checkbox-fill-a1" class="cr">Save Details</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mb-4">Login</button>
+                    <button type="submit" class="btn btn-primary mb-4" [disabled]="isFormInvalid()">Login</button>
                     <p class="mb-2 text-muted">
                         Forgot password?
                         <a [routerLink]="['#']">Reset</a>
@@ -59,7 +59,7 @@
                 </form>
                 <p class="mb-0 text-muted">
                     Don’t have an account?
-                    <a [routerLink]="['/register']">Sign up</a>
+                    <a [routerLink]="['/auth/register']">Sign up</a>
                 </p>
             </div>
         </div>

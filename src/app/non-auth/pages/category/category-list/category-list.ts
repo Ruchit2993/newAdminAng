@@ -1,13 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Category, CategoryService } from '../category.service';
-import { clippingParents } from '@popperjs/core';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-category-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgbPaginationModule, FormsModule],
   templateUrl: './category-list.html',
   styleUrl: './category-list.scss',
 })
@@ -16,6 +17,15 @@ export class CategoryList implements OnInit {
   showDeleteModal = false;
   categoryToDeleteId: number | null = null;
 
+  // Pagination properties
+  page = 1;
+  pageSize = 10;
+  collectionSize = 0;
+
+  // Search & Filter properties
+  searchTerm = '';
+  statusFilter = -1; // -1 for All
+
   constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -23,16 +33,45 @@ export class CategoryList implements OnInit {
   }
 
   loadCategories(): void {
-    this.categoryService.getAll().subscribe({
-      next: (data) => {
-        console.log('Category List Data Received:', data);
-        this.categories = data;
-        this.cdr.detectChanges(); // Manually trigger change detection
+    const filterStatus = this.statusFilter === -1 ? [0, 1] : this.statusFilter;
+
+    const payload = {
+      order: [['created_at', 'DESC']],
+      search: this.searchTerm, // Search functionality can be added later
+      filter: { status: filterStatus },
+      offset: (this.page - 1) * this.pageSize,
+      limit: this.pageSize,
+      allrecords: false,
+      searchfields: ['name']
+    };
+
+    // Cast payload as any here to avoid typescript checks if strict mode complains about array type mismatch but structure matches requirements
+    this.categoryService.getList(payload as any).subscribe({
+      next: (response) => {
+        console.log('Category List Data Received:', response);
+        this.categories = response.data || [];
+        this.collectionSize = response.totalRecords;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Category List Fetch Error:', err);
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.loadCategories();
+  }
+
+  onSearch(): void {
+    this.page = 1;
+    this.loadCategories();
+  }
+
+  onStatusFilterChange(): void {
+    this.page = 1;
+    this.loadCategories();
   }
 
   openDeleteModal(id: number): void {

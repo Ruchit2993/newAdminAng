@@ -22,6 +22,27 @@ interface SingleApiResponse {
     data: Category;
 }
 
+interface CategoryListPayload {
+    order: string[][];
+    search: string;
+    filter: { status: number | number[] };
+    offset: number;
+    limit: number;
+    allrecords: boolean;
+    searchfields: string[];
+}
+
+interface CategoryListResponse {
+    success: boolean;
+    message: string;
+    data: {
+        data: Category[];
+        totalRecords: number;
+        offset: number;
+        limit: number;
+    };
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -31,7 +52,21 @@ export class CategoryService {
     constructor(private http: HttpClient) { }
 
     getAll(): Observable<Category[]> {
-        return this.http.get<ApiResponse>(this.apiUrl).pipe(
+        return this.http.get<any>(this.apiUrl).pipe(
+            map(response => {
+                // Handle both direct array or nested data structure
+                if (Array.isArray(response.data)) {
+                    return response.data;
+                } else if (response.data && Array.isArray(response.data.data)) {
+                    return response.data.data;
+                }
+                return [];
+            })
+        );
+    }
+
+    getList(payload: CategoryListPayload): Observable<{ data: Category[], totalRecords: number }> {
+        return this.http.post<CategoryListResponse>(`${this.apiUrl}/list`, payload).pipe(
             map(response => response.data)
         );
     }

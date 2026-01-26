@@ -27,7 +27,7 @@ export class CategoryEdit implements OnInit {
   ) {
     this.categoryForm = this.formBuilder.group({
       name: ['', Validators.required],
-      image: [''], // We still keep this for potential preview or existing URL if needed, or remove validator
+      image: ['', Validators.required],
       status: ['Active', Validators.required]
     });
   }
@@ -53,6 +53,10 @@ export class CategoryEdit implements OnInit {
         // Map backend status (1/0) to form value ('Active'/'Inactive')
         status: (category.status == 1 || category.status == '1') ? 'Active' : 'Inactive'
       });
+
+      // Remove required validator for image in edit mode
+      this.categoryForm.get('image')?.clearValidators();
+      this.categoryForm.get('image')?.updateValueAndValidity();
 
       if (category.image) {
         // Assuming backend returns relative path like 'uploads/...'

@@ -91,7 +91,8 @@
                             </label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary shadow-2 mb-4">Sign up</button>
+                    <button type="submit" class="btn btn-primary shadow-2 mb-4" [disabled]="isFormInvalid()">Sign
+                        up</button>
                 </form>
                 <p class="mb-0 text-muted">
                     Already have an account?

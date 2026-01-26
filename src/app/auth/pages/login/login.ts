@@ -1,5 +1,4 @@
-// angular import
-import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { email, Field, form, minLength, required } from '@angular/forms/signals';
@@ -39,6 +38,10 @@ export class Login {
     minLength(schemaPath.password, 8, { message: 'Password must be at least 8 characters' });
   });
 
+  isFormInvalid = computed(() => {
+    return this.loginForm.email().invalid() || this.loginForm.password().invalid();
+  });
+
   onSubmit(event: Event) {
     this.submitted.set(true);
     this.error.set('');
@@ -47,8 +50,12 @@ export class Login {
     if (!this.loginForm.email().invalid() && !this.loginForm.password().invalid()) {
       const credentials = this.loginModal();
       this.authService.login(credentials).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           console.log('Login Success:', response);
+          const token = response.token || response.data?.token;
+          if (token) {
+            localStorage.setItem('token', token);
+          }
           this.toastr.success('Login Successful', 'Success');
           this.router.navigate(['/dashboard']);
         },

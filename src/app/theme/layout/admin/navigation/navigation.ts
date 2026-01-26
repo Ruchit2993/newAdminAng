@@ -35,6 +35,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/category',
         icon: 'feather icon-layers',
         classes: 'nav-item'
+      },
+      {
+        id: 'product',
+        title: 'Products',
+        type: 'item',
+        url: '/product',
+        icon: 'feather icon-box',
+        classes: 'nav-item'
       }
     ]
   },

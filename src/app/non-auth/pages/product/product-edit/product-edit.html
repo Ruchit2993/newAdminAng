@@ -1,0 +1,99 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>{{ isEditMode ? 'Edit' : 'Add' }} Product</h5>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" formControlName="name"
+                            [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" />
+                        @if (submitted && f['name'].errors) {
+                        <div class="invalid-feedback">
+                            @if (f['name'].errors?.['required']) {
+                            <div>Name is required</div>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category_id">Category</label>
+                        <select class="form-control" id="category_id" formControlName="category_id"
+                            [ngClass]="{ 'is-invalid': submitted && f['category_id'].errors }">
+                            <option value="">Select Category</option>
+                            @for (cat of categories; track cat.id) {
+                            <option [value]="cat.id">{{ cat.name }}</option>
+                            }
+                        </select>
+                        @if (submitted && f['category_id'].errors) {
+                        <div class="invalid-feedback">
+                            @if (f['category_id'].errors?.['required']) {
+                            <div>Category is required</div>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="number" class="form-control" id="price" formControlName="price"
+                            [ngClass]="{ 'is-invalid': submitted && f['price'].errors }" />
+                        @if (submitted && f['price'].errors) {
+                        <div class="invalid-feedback">
+                            @if (f['price'].errors?.['required']) {
+                            <div>Price is required</div>
+                            }
+                            @if (f['price'].errors?.['min']) {
+                            <div>Price must be positive</div>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Image</label>
+                        <input type="file" class="form-control" id="image" (change)="onFileChange($event)"
+                            [ngClass]="{ 'is-invalid': submitted && f['image'].errors }" />
+                        @if (submitted && f['image'].errors) {
+                        <small class="form-text text-muted">Upload an image for the product.</small>
+                        <div class="invalid-feedback">
+                            @if (f['image'].errors?.['required']) {
+                            <div>Image is required</div>
+                            }
+                        </div>
+                        }
+
+                        @if (imagePreview) {
+                        <div class="mt-2">
+                            <img [src]="imagePreview" alt="Product Preview" class="img-thumbnail"
+                                style="max-height: 200px;">
+                        </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Status</label>
+                        <div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="active" name="status" class="custom-control-input"
+                                    value="Active" formControlName="status">
+                                <label class="custom-control-label" for="active">Active</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="inactive" name="status" class="custom-control-input"
+                                    value="Inactive" formControlName="status">
+                                <label class="custom-control-label" for="inactive">Inactive</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update' : 'Add' }}</button>
+                    <button type="button" class="btn btn-secondary" [routerLink]="['/product']">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

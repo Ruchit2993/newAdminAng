@@ -1,5 +1,5 @@
 // angular import
-import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { email, Field, form, minLength, required } from '@angular/forms/signals';
@@ -43,6 +43,13 @@ export class Registration {
     // required(schemaPath.username, { message: 'Username is required' });
   });
 
+  isFormInvalid = computed(() => {
+    return this.registerForm.email().invalid() ||
+      this.registerForm.password().invalid() ||
+      this.registerForm.confirmPassword().invalid() ||
+      this.passwordsMismatch();
+  });
+
   onSubmit(event: Event) {
     this.submitted.set(true);
     this.error.set('');
@@ -55,8 +62,12 @@ export class Registration {
         /* && !this.registerForm.username().invalid() */) {
       const credentials = this.registerModel();
       this.authService.register(credentials).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           console.log('Registration Success:', response);
+          const token = response.token || response.data?.token;
+          if (token) {
+            localStorage.setItem('token', token);
+          }
           this.toastr.success('Registration Successful', 'Success');
           this.router.navigate(['/auth/login']);
         },

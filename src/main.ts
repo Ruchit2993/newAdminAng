@@ -19,6 +19,8 @@ bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(BrowserModule, AppRoutingModule),
     provideAnimations(),
-    provideToastr()
+    provideToastr({
+      positionClass: 'toast-bottom-right',
+    })
   ]
 }).catch((err) => console.error(err));
