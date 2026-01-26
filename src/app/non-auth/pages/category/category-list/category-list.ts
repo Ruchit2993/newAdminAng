@@ -33,7 +33,9 @@ export class CategoryList implements OnInit {
   }
 
   loadCategories(): void {
-    const filterStatus = this.statusFilter === -1 ? [0, 1] : this.statusFilter;
+    // Ensure statusFilter is treated as a number
+    const status = +this.statusFilter;
+    const filterStatus = status === -1 ? [0, 1] : [status];
 
     const payload = {
       order: [['created_at', 'DESC']],

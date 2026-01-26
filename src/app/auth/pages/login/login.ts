@@ -2,11 +2,8 @@ import { ChangeDetectorRef, Component, inject, signal, computed } from '@angular
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { email, Field, form, minLength, required } from '@angular/forms/signals';
-
-// project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { AuthService } from '../../services/auth.service';
-
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -32,10 +29,10 @@ export class Login {
   });
 
   loginForm = form(this.loginModal, (schemaPath) => {
-    required(schemaPath.email, { message: 'Email is required' });
-    email(schemaPath.email, { message: 'Enter a valid email address' });
-    required(schemaPath.password, { message: 'Password is required' });
-    minLength(schemaPath.password, 8, { message: 'Password must be at least 8 characters' });
+    required(schemaPath.email);
+    email(schemaPath.email);
+    required(schemaPath.password);
+    minLength(schemaPath.password, 8);
   });
 
   isFormInvalid = computed(() => {
@@ -51,7 +48,7 @@ export class Login {
       const credentials = this.loginModal();
       this.authService.login(credentials).subscribe({
         next: (response: any) => {
-          console.log('Login Success:', response);
+          // console.log('Login', response);
           const token = response.token || response.data?.token;
           if (token) {
             localStorage.setItem('token', token);
@@ -60,15 +57,12 @@ export class Login {
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
-          console.error('Login Error:', err);
+          // console.error('Login', err);
           this.error.set('Login failed. Please check your credentials.');
           this.toastr.error('Login failed. Please check your credentials.', 'Error');
           this.cd.detectChanges();
         }
       });
-    } else {
-      // logic to show errors if needed, though the UI handles it via submitted() check
-      this.toastr.error('Please check the form for errors.', 'Validation Error');
     }
 
     this.cd.detectChanges();

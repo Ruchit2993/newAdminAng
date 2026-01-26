@@ -20,7 +20,8 @@
                         @if (submitted() && loginForm.email().invalid()) {
                         <div class="invalid-feedback">
                             @for (error of loginForm.email().errors(); track error.kind) {
-                            <div>{{ error.message }}</div>
+                            @if (error.kind === 'required') { <div>Email is required</div> }
+                            @if (error.kind === 'email') { <div>Enter a valid email address</div> }
                             }
                         </div>
                         }
@@ -40,7 +41,8 @@
                         @if (submitted() && loginForm.password().errors().length > 0) {
                         <div class="invalid-feedback">
                             @for (error of loginForm.password().errors(); track error.kind) {
-                            <div>{{ error.message }}</div>
+                            @if (error.kind === 'required') { <div>Password is required</div> }
+                            @if (error.kind === 'minLength') { <div>Password must be at least 8 characters</div> }
                             }
                         </div>
                         }

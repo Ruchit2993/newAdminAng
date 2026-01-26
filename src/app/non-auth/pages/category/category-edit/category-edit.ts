@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CategoryService, Category } from '../category.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-category-edit',
@@ -23,7 +24,8 @@ export class CategoryEdit implements OnInit {
     private formBuilder: FormBuilder,
     private categoryService: CategoryService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {
     this.categoryForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -46,20 +48,16 @@ export class CategoryEdit implements OnInit {
     this.categoryService.getById(id).subscribe(category => {
       console.log('Fetched Category for Edit:', category);
 
-      // Patch name directly
       this.categoryForm.patchValue({
         name: category.name,
-        image: '', // Reset file input
-        // Map backend status (1/0) to form value ('Active'/'Inactive')
+        image: '',
         status: (category.status == 1 || category.status == '1') ? 'Active' : 'Inactive'
       });
 
-      // Remove required validator for image in edit mode
       this.categoryForm.get('image')?.clearValidators();
       this.categoryForm.get('image')?.updateValueAndValidity();
 
       if (category.image) {
-        // Assuming backend returns relative path like 'uploads/...'
         this.imagePreview = `http://localhost:3300/${category.image}`;
         console.log('Set Image Preview:', this.imagePreview);
       }
@@ -72,7 +70,12 @@ export class CategoryEdit implements OnInit {
     if (event.target.files.length > 0) {
       this.selectedFile = event.target.files[0];
 
-      // Create preview
+      // Patch the form control to satisfy Validators.required
+      this.categoryForm.patchValue({
+        image: this.selectedFile
+      });
+      this.categoryForm.get('image')?.updateValueAndValidity();
+
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
@@ -88,8 +91,8 @@ export class CategoryEdit implements OnInit {
       return;
     }
 
-    console.log('Form Values:', this.categoryForm.value);
-    console.log('Selected File:', this.selectedFile);
+    // console.log('Form Values', this.categoryForm.value);
+    // console.log('Selected File', this.selectedFile);
 
     const formData = new FormData();
     formData.append('name', this.categoryForm.get('name')?.value);
@@ -97,36 +100,22 @@ export class CategoryEdit implements OnInit {
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
-    } else {
-      console.warn('No file selected! Backend might require an image.');
     }
-
-    // Debug FormData
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
+    console.log('Form Data', formData);
 
     if (this.isEditMode && this.categoryId) {
       this.categoryService.update(this.categoryId, formData).subscribe({
         next: () => {
-          console.log('Update successful');
+          this.toastr.success('Category updated successfully', 'Success');
           this.router.navigate(['/category']);
         },
-        error: (err) => {
-          console.error('Update failed', err);
-          alert('Failed to update category: ' + (err.error?.message || err.message));
-        }
       });
     } else {
       this.categoryService.create(formData).subscribe({
         next: () => {
-          console.log('Create successful');
+          this.toastr.success('Category created successfully', 'Success');
           this.router.navigate(['/category']);
         },
-        error: (err) => {
-          console.error('Create failed', err);
-          alert('Failed to create category: ' + (err.error?.message || err.message));
-        }
       });
     }
   }

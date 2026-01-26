@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ProductService, Product } from '../product.service';
 import { CategoryService, Category } from '../../category/category.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-edit',
@@ -21,6 +22,7 @@ export class ProductEdit implements OnInit {
   selectedFile: File | null = null;
   imagePreview: SafeUrl | string | ArrayBuffer | null = null;
   categories: Category[] = [];
+  currentImage: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,7 +31,8 @@ export class ProductEdit implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastr: ToastrService
   ) {
     this.productForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -53,9 +56,9 @@ export class ProductEdit implements OnInit {
 
   loadCategories(): void {
     const payload = {
-      order: [['created_at', 'DESC']], // Use created_at as it is known to work
+      order: [['created_at', 'DESC']],
       search: '',
-      filter: { status: [1] }, // Use array for status
+      filter: { status: [1] },
       offset: 0,
       limit: 100,
       allrecords: false,
@@ -64,8 +67,7 @@ export class ProductEdit implements OnInit {
 
     this.categoryService.getList(payload as any).subscribe({
       next: (response: any) => {
-        console.log('ProductEdit: Loaded Categories Response', response);
-        // Robust mapping
+        console.log('category res', response);
         if (Array.isArray(response)) {
           this.categories = response;
         } else if (response.data && Array.isArray(response.data)) {
@@ -75,13 +77,11 @@ export class ProductEdit implements OnInit {
         } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
           this.categories = response.data.data;
         } else {
-          console.warn('ProductEdit: Could not map categories from response');
           this.categories = [];
         }
-        console.log('Categories assigned:', this.categories);
+        console.log('Categories', this.categories);
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('ProductEdit: Failed to load categories', err)
     });
   }
 
@@ -99,11 +99,11 @@ export class ProductEdit implements OnInit {
         status: statusValue
       });
 
-      // Remove required validator for image in edit mode
       this.productForm.get('image')?.clearValidators();
       this.productForm.get('image')?.updateValueAndValidity();
 
       if (product.image) {
+        this.currentImage = product.image;
         const fullUrl = `http://localhost:3300/${product.image}`;
         this.imagePreview = this.sanitizer.bypassSecurityTrustUrl(fullUrl);
       }
@@ -118,7 +118,12 @@ export class ProductEdit implements OnInit {
     if (event.target.files.length > 0) {
       this.selectedFile = event.target.files[0];
 
-      // Create preview
+      // Patch the form control to satisfy Validators.required
+      this.productForm.patchValue({
+        image: this.selectedFile
+      });
+      this.productForm.get('image')?.updateValueAndValidity();
+
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
@@ -142,27 +147,23 @@ export class ProductEdit implements OnInit {
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
+    } else if (this.isEditMode && this.currentImage) {
+      formData.append('image', this.currentImage);
     }
 
     if (this.isEditMode && this.productId) {
       this.productService.update(this.productId, formData).subscribe({
         next: () => {
+          this.toastr.success('Product updated successfully', 'Success');
           this.router.navigate(['/product']);
         },
-        error: (err) => {
-          console.error('Update failed', err);
-          alert('Failed to update product: ' + (err.error?.message || err.message));
-        }
       });
     } else {
       this.productService.create(formData).subscribe({
         next: () => {
+          this.toastr.success('Product created successfully', 'Success');
           this.router.navigate(['/product']);
         },
-        error: (err) => {
-          console.error('Create failed', err);
-          alert('Failed to create product: ' + (err.error?.message || err.message));
-        }
       });
     }
   }

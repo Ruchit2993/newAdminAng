@@ -27,20 +27,18 @@ export class Registration {
   error = signal('');
   showPassword = signal(false);
 
-  registerModel = signal<{ email: string; password: string; confirmPassword: string; /* username: string */ }>({
+  registerModel = signal<{ email: string; password: string; confirmPassword: string; }>({
     email: '',
     password: '',
     confirmPassword: '',
-    // username: ''
   });
 
   registerForm = form(this.registerModel, (schemaPath) => {
-    required(schemaPath.email, { message: 'Email is required' });
-    email(schemaPath.email, { message: 'Enter a valid email address' });
-    required(schemaPath.password, { message: 'Password is required' });
-    minLength(schemaPath.password, 8, { message: 'Password must be at least 8 characters' });
-    required(schemaPath.confirmPassword, { message: 'Confirm Password is required' });
-    // required(schemaPath.username, { message: 'Username is required' });
+    required(schemaPath.email);
+    email(schemaPath.email);
+    required(schemaPath.password);
+    minLength(schemaPath.password, 8);
+    required(schemaPath.confirmPassword);
   });
 
   isFormInvalid = computed(() => {
@@ -58,12 +56,11 @@ export class Registration {
     if (!this.registerForm.email().invalid() &&
       !this.registerForm.password().invalid() &&
       !this.registerForm.confirmPassword().invalid() &&
-      !this.passwordsMismatch()
-        /* && !this.registerForm.username().invalid() */) {
+      !this.passwordsMismatch()) {
       const credentials = this.registerModel();
       this.authService.register(credentials).subscribe({
         next: (response: any) => {
-          console.log('Registration Success:', response);
+          // console.log('Registration', response);
           const token = response.token || response.data?.token;
           if (token) {
             localStorage.setItem('token', token);
@@ -72,15 +69,12 @@ export class Registration {
           this.router.navigate(['/auth/login']);
         },
         error: (err) => {
-          console.error('Registration Error:', err);
+          // console.error('Registration', err);
           this.error.set('Registration failed. Please try again.');
           this.toastr.error('Registration failed. Please try again.', 'Error');
           this.cd.detectChanges();
         }
       });
-    } else {
-      // logic to show errors if needed
-      this.toastr.error('Please check the form for errors.', 'Validation Error');
     }
     this.cd.detectChanges();
   }
