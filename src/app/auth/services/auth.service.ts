@@ -10,6 +10,10 @@ export class AuthService {
 
     constructor(private http: HttpClient) { }
 
+    isLoggedIn(): boolean {
+        return !!localStorage.getItem('token');
+    }
+
     login(credentials: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/login`, credentials);
     }

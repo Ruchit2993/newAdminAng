@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Product, ProductService } from '../product.service';
 import { CategoryService, Category } from '../../category/category.service';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-list',
@@ -31,7 +32,8 @@ export class ProductList implements OnInit {
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -135,9 +137,17 @@ export class ProductList implements OnInit {
 
   confirmDelete(): void {
     if (this.productToDeleteId) {
-      this.productService.delete(this.productToDeleteId).subscribe(() => {
-        this.loadProducts();
-        this.closeDeleteModal();
+      this.productService.delete(this.productToDeleteId).subscribe({
+        next: () => {
+          this.toastr.success('Product deleted successfully', 'Success');
+          this.loadProducts();
+          this.closeDeleteModal();
+        },
+        error: (err) => {
+          console.error('Delete Product Error:', err);
+          this.toastr.error('Failed to delete product', 'Error');
+          this.closeDeleteModal();
+        }
       });
     }
   }

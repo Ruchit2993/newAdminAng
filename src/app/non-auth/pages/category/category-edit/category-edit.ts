@@ -19,6 +19,7 @@ export class CategoryEdit implements OnInit {
   submitted = false;
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
+  currentImage: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -58,6 +59,7 @@ export class CategoryEdit implements OnInit {
       this.categoryForm.get('image')?.updateValueAndValidity();
 
       if (category.image) {
+        this.currentImage = category.image;
         this.imagePreview = `http://localhost:3300/${category.image}`;
         console.log('Set Image Preview:', this.imagePreview);
       }
@@ -84,6 +86,15 @@ export class CategoryEdit implements OnInit {
     }
   }
 
+  removeImage(): void {
+    this.imagePreview = null;
+    this.currentImage = null;
+    this.selectedFile = null;
+    this.categoryForm.patchValue({ image: '' });
+    this.categoryForm.get('image')?.setValidators([Validators.required]);
+    this.categoryForm.get('image')?.updateValueAndValidity();
+  }
+
   onSubmit(): void {
     this.submitted = true;
 
@@ -100,6 +111,8 @@ export class CategoryEdit implements OnInit {
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
+    } else if (this.isEditMode && this.currentImage) {
+      formData.append('image', this.currentImage);
     }
     console.log('Form Data', formData);
 

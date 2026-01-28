@@ -17,7 +17,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 export class NavRightComponent {
   // public props
   visibleUser = {
-    name: 'John Doe',
+    name: 'Admin User',
     avatar: 'assets/images/user/avatar-1.jpg'
   };
 

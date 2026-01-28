@@ -67,9 +67,13 @@
                         }
 
                         @if (imagePreview) {
-                        <div class="mt-2">
+                        <div class="mt-2 position-relative d-inline-block">
                             <img [src]="imagePreview" alt="Product Preview" class="img-thumbnail"
                                 style="max-height: 200px;">
+                            <button type="button" class="btn btn-danger btn-sm position-absolute"
+                                style="top: 0; right: 0;" (click)="removeImage()">
+                                &times;
+                            </button>
                         </div>
                         }
                     </div>

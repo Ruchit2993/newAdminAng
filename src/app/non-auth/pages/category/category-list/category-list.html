@@ -76,16 +76,15 @@
     </div>
 </div>
 
-<!-- Inline Delete Confirmation Modal -->
+
 <div class="modal fade" tabindex="-1" role="dialog" [ngClass]="{'show': showDeleteModal}"
     [style.display]="showDeleteModal ? 'block' : 'none'"
     [style.background]="showDeleteModal ? 'rgba(0,0,0,0.5)' : 'none'" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header display-flex justify-content-between align-items-center">
                 <h5 class="modal-title">Confirm Delete</h5>
-                <button type="button" class="close" (click)="closeDeleteModal()" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn fa fa-close" (click)="closeDeleteModal()" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">

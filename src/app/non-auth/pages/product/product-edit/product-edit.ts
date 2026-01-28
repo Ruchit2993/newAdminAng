@@ -129,7 +129,22 @@ export class ProductEdit implements OnInit {
         this.imagePreview = reader.result;
       };
       reader.readAsDataURL(this.selectedFile!);
+    } else {
+      // Handle case where user cancels file selection or selects nothing
+      // If we want to strictly keep the previous state if nothing selected, we might do nothing.
+      // But typically change event implies interaction.
+      // For now, let's keep it simple as per existing logic, but we might want to ensure we don't accidentally clear if cancel.
+      // The DOM 'change' event usually only fires on actual change.
     }
+  }
+
+  removeImage(): void {
+    this.imagePreview = null;
+    this.currentImage = null;
+    this.selectedFile = null;
+    this.productForm.patchValue({ image: '' });
+    this.productForm.get('image')?.setValidators([Validators.required]);
+    this.productForm.get('image')?.updateValueAndValidity();
   }
 
   onSubmit(): void {

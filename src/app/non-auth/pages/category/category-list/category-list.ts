@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Category, CategoryService } from '../category.service';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-category-list',
@@ -26,7 +27,11 @@ export class CategoryList implements OnInit {
   searchTerm = '';
   statusFilter = -1; // -1 for All
 
-  constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef) { }
+  constructor(
+    private categoryService: CategoryService,
+    private cdr: ChangeDetectorRef,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.loadCategories();
@@ -89,9 +94,17 @@ export class CategoryList implements OnInit {
 
   confirmDelete(): void {
     if (this.categoryToDeleteId) {
-      this.categoryService.delete(this.categoryToDeleteId).subscribe(() => {
-        this.loadCategories();
-        this.closeDeleteModal();
+      this.categoryService.delete(this.categoryToDeleteId).subscribe({
+        next: () => {
+          this.toastr.success('Category deleted successfully', 'Success');
+          this.loadCategories();
+          this.closeDeleteModal();
+        },
+        error: (err) => {
+          console.error('Delete Category Error:', err);
+          this.toastr.error('Failed to delete category', 'Error');
+          this.closeDeleteModal();
+        }
       });
     }
   }
