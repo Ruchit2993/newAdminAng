@@ -1,15 +1,16 @@
 // angular import
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 
 // bootstrap import
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-nav-right',
   imports: [SharedModule],
+  standalone: true,
   templateUrl: './nav-right.component.html',
   styleUrls: ['./nav-right.component.scss'],
   providers: [NgbDropdownConfig]
@@ -22,14 +23,13 @@ export class NavRightComponent {
   };
 
   // constructor
-  constructor() {
-    const config = inject(NgbDropdownConfig);
-
-    config.placement = 'bottom-right';
+  constructor(private router: Router, private ngbDropdownConfig: NgbDropdownConfig) {
+    this.ngbDropdownConfig.placement = 'bottom-right';
   }
 
   logout() {
     // console.log('logout');
     localStorage.clear();
+    this.router.navigate(['/auth/login']);
   }
 }

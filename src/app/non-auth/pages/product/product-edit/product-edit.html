@@ -2,100 +2,142 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5>{{ isEditMode ? 'Edit' : 'Add' }} Product</h5>
+                <h5>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h5>
             </div>
+
             <div class="card-body">
                 <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" formControlName="name"
-                            [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" />
-                        @if (submitted && f['name'].errors) {
-                        <div class="invalid-feedback">
-                            @if (f['name'].errors?.['required']) {
-                            <div>Name is required</div>
-                            }
-                        </div>
-                        }
-                    </div>
 
-                    <div class="form-group">
-                        <label for="category_id">Category</label>
-                        <select class="form-control" id="category_id" formControlName="category_id"
-                            [ngClass]="{ 'is-invalid': submitted && f['category_id'].errors }">
-                            <option value="">Select Category</option>
-                            @for (cat of categories; track cat.id) {
-                            <option [value]="cat.id">{{ cat.name }}</option>
-                            }
-                        </select>
-                        @if (submitted && f['category_id'].errors) {
-                        <div class="invalid-feedback">
-                            @if (f['category_id'].errors?.['required']) {
-                            <div>Category is required</div>
-                            }
-                        </div>
-                        }
-                    </div>
+                    <!-- Product Name -->
+                    <div class="form-group mb-3">
+                        <div class="row align-items-start">
+                            <label for="name" class="fw-bold col-3">Name :</label>
+                            <div class="col-9">
+                                <input type="text" class="form-control" id="name" formControlName="name"
+                                    placeholder="Enter product name"
+                                    [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" />
 
-                    <div class="form-group">
-                        <label for="price">Price</label>
-                        <input type="number" class="form-control" id="price" formControlName="price"
-                            [ngClass]="{ 'is-invalid': submitted && f['price'].errors }" />
-                        @if (submitted && f['price'].errors) {
-                        <div class="invalid-feedback">
-                            @if (f['price'].errors?.['required']) {
-                            <div>Price is required</div>
-                            }
-                            @if (f['price'].errors?.['min']) {
-                            <div>Price must be positive</div>
-                            }
-                        </div>
-                        }
-                    </div>
-
-                    <div class="form-group">
-                        <label for="image">Image</label>
-                        <input type="file" class="form-control" id="image" (change)="onFileChange($event)"
-                            [ngClass]="{ 'is-invalid': submitted && f['image'].errors }" />
-                        @if (submitted && f['image'].errors) {
-                        <small class="form-text text-muted">Upload an image for the product.</small>
-                        <div class="invalid-feedback">
-                            @if (f['image'].errors?.['required']) {
-                            <div>Image is required</div>
-                            }
-                        </div>
-                        }
-
-                        @if (imagePreview) {
-                        <div class="mt-2 position-relative d-inline-block">
-                            <img [src]="imagePreview" alt="Product Preview" class="img-thumbnail"
-                                style="max-height: 200px;">
-                            <button type="button" class="btn btn-danger btn-sm position-absolute"
-                                style="top: 0; right: 0;" (click)="removeImage()">
-                                &times;
-                            </button>
-                        </div>
-                        }
-                    </div>
-
-                    <div class="form-group">
-                        <label>Status</label>
-                        <div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="active" name="status" class="custom-control-input"
-                                    value="Active" formControlName="status">
-                                <label class="custom-control-label" for="active">Active</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="inactive" name="status" class="custom-control-input"
-                                    value="Inactive" formControlName="status">
-                                <label class="custom-control-label" for="inactive">Inactive</label>
+                                @if (submitted && f['name'].errors) {
+                                <div class="invalid-feedback d-block">
+                                    @if (f['name'].errors?.['required']) {
+                                    <div>Name is required</div>
+                                    }
+                                </div>
+                                }
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update' : 'Add' }}</button>
-                    <button type="button" class="btn btn-secondary" [routerLink]="['/product']">Cancel</button>
+                    <!-- Category -->
+                    <div class="form-group mb-3">
+                        <div class="row align-items-start">
+                            <label for="category_id" class="fw-bold col-3">Category :</label>
+                            <div class="col-9">
+                                <select class="form-control" id="category_id" formControlName="category_id"
+                                    [ngClass]="{ 'is-invalid': submitted && f['category_id'].errors }">
+                                    <option value="">Select Category</option>
+                                    @for (cat of categories; track cat.id) {
+                                    <option [value]="cat.id">{{ cat.name }}</option>
+                                    }
+                                </select>
+
+                                @if (submitted && f['category_id'].errors) {
+                                <div class="invalid-feedback d-block">
+                                    @if (f['category_id'].errors?.['required']) {
+                                    <div>Category is required</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="form-group mb-3">
+                        <div class="row align-items-start">
+                            <label for="price" class="fw-bold col-3">Price :</label>
+                            <div class="col-9">
+                                <input type="number" class="form-control" id="price" formControlName="price"
+                                    placeholder="Enter price"
+                                    [ngClass]="{ 'is-invalid': submitted && f['price'].errors }" />
+
+                                @if (submitted && f['price'].errors) {
+                                <div class="invalid-feedback d-block">
+                                    @if (f['price'].errors?.['required']) {
+                                    <div>Price is required</div>
+                                    }
+                                    @if (f['price'].errors?.['min']) {
+                                    <div>Price must be positive</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Image -->
+                    <div class="form-group mb-4">
+                        <div class="row align-items-start">
+                            <label class="fw-bold col-3">Product Image :</label>
+
+                            <div class="d-flex align-items-center col-9">
+                                <input type="file" #fileUpload class="d-none" (change)="onFileChange($event)"
+                                    accept="image/*">
+
+                                <button type="button" class="btn btn-info" (click)="fileUpload.click()">
+                                    <i class="bi bi-upload me-1"></i> Choose Image
+                                </button>
+
+                                @if (imagePreview) {
+                                <div class="position-relative ms-3">
+                                    <img [src]="imagePreview" class="rounded border shadow-sm"
+                                        style="width: 100px; height: 100px; object-fit: cover;">
+
+                                    <button type="button"
+                                        class="btn btn-danger btn-sm p-0 position-absolute d-flex align-items-center justify-content-center"
+                                        style="top: 50%; right: -35px; transform: translateY(-50%); width: 20px; height: 20px;"
+                                        (click)="removeImage()">
+                                        <span class="fa fa-trash" style="font-size: 12px;"></span>
+                                    </button>
+                                </div>
+                                } @else {
+                                <span class="text-muted ms-2 small fst-italic">No file chosen</span>
+                                }
+                            </div>
+
+                            @if (submitted && f['image'].errors?.['required']) {
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle me-1"></i> Image is required
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group mb-4">
+                        <div class="row align-items-start">
+                            <label class="fw-bold col-3">Status :</label>
+                            <div class="col-9">
+                                <div class="custom-control custom-radio custom-control-inline d-inline-block me-3">
+                                    <input type="radio" id="statusActive" name="status"
+                                        class="custom-control-input me-1" value="Active" formControlName="status">
+                                    <label class="custom-control-label" for="statusActive">Active</label>
+                                </div>
+
+                                <div class="custom-control custom-radio custom-control-inline d-inline-block">
+                                    <input type="radio" id="statusInactive" name="status"
+                                        class="custom-control-input me-1" value="Inactive" formControlName="status">
+                                    <label class="custom-control-label" for="statusInactive">Inactive</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger ms-2" (click)="resetForm()">Reset</button>
+                    <button type="button" class="btn btn-secondary ms-2" [routerLink]="['/product']">Cancel</button>
+
                 </form>
             </div>
         </div>

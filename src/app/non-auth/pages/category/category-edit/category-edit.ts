@@ -47,7 +47,7 @@ export class CategoryEdit implements OnInit {
 
   loadCategory(id: number): void {
     this.categoryService.getById(id).subscribe(category => {
-      console.log('Fetched Category for Edit:', category);
+      console.log('loadcategory', category);
 
       this.categoryForm.patchValue({
         name: category.name,
@@ -61,7 +61,7 @@ export class CategoryEdit implements OnInit {
       if (category.image) {
         this.currentImage = category.image;
         this.imagePreview = `http://localhost:3300/${category.image}`;
-        console.log('Set Image Preview:', this.imagePreview);
+        // console.log('Set Image Preview:', this.imagePreview);
       }
     });
   }
@@ -84,6 +84,15 @@ export class CategoryEdit implements OnInit {
       };
       reader.readAsDataURL(this.selectedFile!);
     }
+  }
+
+  resetForm(): void {
+    this.categoryForm.reset();
+    this.imagePreview = null;
+    this.currentImage = null;
+    this.selectedFile = null;
+    this.categoryForm.get('image')?.setValidators([Validators.required]);
+    this.categoryForm.get('image')?.updateValueAndValidity();
   }
 
   removeImage(): void {

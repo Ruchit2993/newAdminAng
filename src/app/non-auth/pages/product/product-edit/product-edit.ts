@@ -147,6 +147,14 @@ export class ProductEdit implements OnInit {
     this.productForm.get('image')?.updateValueAndValidity();
   }
 
+  resetForm(): void {
+    this.productForm.reset();
+    this.selectedFile = null;
+    this.imagePreview = null;
+    this.currentImage = null;
+    this.submitted = false;
+  }
+
   onSubmit(): void {
     this.submitted = true;
 
