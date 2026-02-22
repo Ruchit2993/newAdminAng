@@ -14,11 +14,14 @@ if (environment.production) {
 }
 
 import { provideToastr } from 'ngx-toastr';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './app/core/interceptor/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(BrowserModule, AppRoutingModule),
     provideAnimations(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideToastr({
       positionClass: 'toast-bottom-right',
     })

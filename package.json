@@ -31,6 +31,7 @@
     "bootstrap": "5.3.8",
     "ng-apexcharts": "2.0.4",
     "ngx-scrollbar": "18.0.0",
+    "ngx-spinner": "^21.0.0",
     "ngx-toastr": "^20.0.3",
     "rxjs": "~7.8.2",
     "screenfull": "6.0.2",
